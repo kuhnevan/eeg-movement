@@ -10,7 +10,7 @@ This is a temporary script file.
 from scipy.io import loadmat
 import mne
 
-data_file_path = "../../data/s01.mat";
+data_file_path = "../../data/s01.mat"
 
 mat = loadmat(data_file_path)
 
@@ -84,7 +84,7 @@ ch_names = [" FP1 ",
 info = mne.create_info(ch_names, 512, ch_types=["eeg"] * 64 + ["emg"] * 4)
 raw = mne.io.RawArray(eeg[0][0], info)
 
-# raw.set_montage("biosemi64")
+raw.set_montage("biosemi64")
 
 raw_tmp = raw.copy()
 raw_tmp.filter(1, None)
@@ -92,11 +92,11 @@ raw_tmp.filter(1, None)
 ica = mne.preprocessing.ICA(method="extended-infomax", random_state=1)
 ica.fit(raw_tmp)
 
-# ica.plot_components(inst=raw_tmp)
+ica.plot_components(inst=raw_tmp)
 
-# ica.plot_sources(inst=raw_tmp)
+ica.plot_sources(inst=raw_tmp)
 
-ica.exclude = [1]
+ica.exclude = [0]
 
 raw_corrected = raw.copy()
 ica.apply(raw_corrected)
