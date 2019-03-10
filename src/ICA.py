@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-Spyder Editor
-
-This is a temporary script file.
-"""
-
 # %matplotlib qt5
 
 from scipy.io import loadmat
 import mne
 import numpy as np
-import pandas as pd
 
 data_file_path = "../../data/s01.mat"
 
@@ -83,9 +76,11 @@ ch_names = [" FP1 ",
 " PO4 ",
 " O2 ", "EMG1", "EMG2", "EMG3", "EMG4"]
 
+#Create info for event data
 info = mne.create_info(ch_names, 512, ch_types=["eeg"] * 64 + ["emg"] * 4)
 raw = mne.io.RawArray(eeg[0][0], info)
 
+#Create new info and raw array for movement event information
 ch_names_events = ch_names + ["movement_event"];
 movement_event = mat["eeg"]["movement_event"][0][0]
 eeg_events = np.concatenate((eeg[0][0], movement_event), axis=0)
@@ -98,6 +93,12 @@ event_times = mne.find_events(raw_events, stim_channel='movement_event')
 print("event_times")
 print(event_times)
 
+#create epoched data
+tmin = -2  # In seconds
+tmax = 5
+epochs = mne.Epochs(raw_events, event_times, tmin=tmin, tmax=tmax)
+print(epochs)
+########
 
 raw.set_montage("biosemi64")
 
@@ -120,4 +121,4 @@ raw.plot(n_channels=64, start=54, duration=4,
          scalings=dict(eeg=512, emg=512))
 
 raw_corrected.plot(n_channels=64, start=54, duration=4, 
-                   scalings=dict(eeg=512, emg=512))
+scalings=dict(eeg=512, emg=512))
