@@ -9,6 +9,8 @@ This is a temporary script file.
 
 from scipy.io import loadmat
 import mne
+import numpy as np
+import pandas as pd
 
 data_file_path = "../../data/s01.mat"
 
@@ -83,6 +85,19 @@ ch_names = [" FP1 ",
 
 info = mne.create_info(ch_names, 512, ch_types=["eeg"] * 64 + ["emg"] * 4)
 raw = mne.io.RawArray(eeg[0][0], info)
+
+ch_names_events = ch_names + ["movement_event"];
+movement_event = mat["eeg"]["movement_event"][0][0]
+eeg_events = np.concatenate((eeg[0][0], movement_event), axis=0)
+info_events = mne.create_info(ch_names_events, 512, ch_types=["eeg"] * 64 + ["emg"] * 4 + ["misc"] * 1)
+
+raw_events = mne.io.RawArray(eeg_events, info_events)
+
+event_times = mne.find_events(raw_events, stim_channel='movement_event')
+
+print("event_times")
+print(event_times)
+
 
 raw.set_montage("biosemi64")
 
