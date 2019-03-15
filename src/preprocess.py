@@ -76,31 +76,15 @@ ch_names = [" FP1 ",
 " PO4 ",
 " O2 ", "EMG1", "EMG2", "EMG3", "EMG4"]
 
-#Create info for event data
-info = mne.create_info(ch_names, 512, ch_types=["eeg"] * 64 + ["emg"] * 4)
-raw = mne.io.RawArray(eeg[0][0], info)
-
 #Create new info and raw array for movement event information
 ch_names_events = ch_names + ["movement_event"]
 movement_event = mat["eeg"]["movement_event"][0][0]
-eeg_events = np.concatenate((eeg[0][0], movement_event), axis=0)
-info_events = mne.create_info(ch_names_events, 512, ch_types=["eeg"] * 64 + ["emg"] * 4 + ["misc"] * 1)
+eeg = np.concatenate((eeg[0][0], movement_event), axis=0)
+info = mne.create_info(ch_names_events, 512, ch_types=["eeg"] * 64 + ["emg"] * 4 + ["misc"] * 1)
 
-raw_events = mne.io.RawArray(eeg_events, info_events)
+raw = mne.io.RawArray(eeg, info)
 
-event_times = mne.find_events(raw_events, stim_channel='movement_event')
-
-print("event_times")
-print(event_times)
-
-#create epoched data
-tmin = -2  # In seconds
-tmax = 5
-epochs = mne.Epochs(raw_events, event_times, tmin=tmin, tmax=tmax)
-epochs_data = epochs.get_data()
-data_FFT = np.fft.fft(epochs_data, axis=0) # axis zero means by column
-print(data_FFT)
-########
+events = mne.find_events(raw, stim_channel='movement_event')
 
 raw.set_montage("biosemi64")
 
@@ -124,3 +108,11 @@ raw.plot(n_channels=64, start=54, duration=4,
 
 raw_corrected.plot(n_channels=64, start=54, duration=4, 
 scalings=dict(eeg=512, emg=512))
+
+#create epoched data
+tmin = -2  # In seconds
+tmax = 5
+epochs = mne.Epochs(raw, events, tmin=tmin, tmax=tmax)
+epochs_data = epochs.get_data()
+data_FFT = np.fft.fft(epochs_data, axis=0) # axis zero means by column
+########
