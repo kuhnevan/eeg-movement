@@ -84,9 +84,9 @@ for j in range(1, 53):
         else:
             data_FFT_right = np.fft.fft(epochs_data, axis=0)
     #end inner for loop
-    savemat('../../processed-data/s0{}-left.mat'.format(j),
+    savemat('../../processed-data/s{}-left.mat'.format(j),
             {'movement_left': data_FFT_left})
-    savemat('../../processed-data/s0{}-right.mat'.format(j),
+    savemat('../../processed-data/s{}-right.mat'.format(j),
             {'movement_right': data_FFT_right})
 #end outer for loop
 ########
