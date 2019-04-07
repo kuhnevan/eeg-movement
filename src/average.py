@@ -13,8 +13,8 @@ for j in range(1, 53):
     left = loadmat("../../processed-data/s{}-left.mat".format(j))
     right = loadmat("../../processed-data/s{}-right.mat".format(j))
     
-    leftMat = np.average(left['movement_left'], axis=0)
-    rightMat = np.average(right['movement_right'], axis=0)
+    leftMat = np.average(left['movement_left'], axis=2)
+    rightMat = np.average(right['movement_right'], axis=2)
     
     savemat('../../processed-data/s{}-left-image.mat'.format(j),
             {'movement_left': leftMat})
