@@ -8,26 +8,34 @@ from scipy.io import loadmat
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
-#left and right should be in form "[1, 2, 3, 4, 5, ...]"
+#left and right should be in form "[[1, 2, 3, ...], [3, 4, 6, ...], [...], ...]"
 left = "../../processed-data-image/s1-left-image.mat"
 right = "../../processed-data-image/s1-right-image.mat"
-leftMat = loadmat(left)
-rightMat = loadmat(right)
+leftMat = loadmat(left)["movement_left"]
+rightMat = loadmat(right)["movement_right"]
 
-X = np.array([leftMat, rightMat])
-y = np.array([1, 2]) #1 corrosponds to left hand, 2 to right hand (could change)
+X = np.concatenate((leftMat, rightMat), axis=0)
+
+yfiller = np.full((1, leftMat.shape[0]), 1, dtype=int)[0]
+y = yfiller
+yfiller = np.full((1, rightMat.shape[0]), 2, dtype=int)[0]
+y = np.concatenate((y, yfiller), axis=None)
 
 for j in range(2, 53):
     left = "../../processed-data-image/s{}-left-image.mat".format(j)
     right = "../../processed-data-image/s{}-right-image.mat".format(j)
-    leftMat = loadmat(left)
-    rightMat = loadmat(right)
-    a = np.array([leftMat["movement_left"], rightMat["movement_right"]])
+    leftMat = loadmat(left)["movement_left"]
+    rightMat = loadmat(right)["movement_right"]
     
     #creates np array in the form [[1, 2, 3, ...], [1, 2, 3, ...], [1, 2, 3,...]]
-    X = np.concatenate((X, a), axis=0)
+    X = np.concatenate((X, leftMat), axis=0)
+    X = np.concatenate((X, rightMat), axis=0)
     #creates np array in the form [1, 2, 1, 2, 1, 2, ...]
-    y = np.concatenate((y, np.array([1, 2])), axis=None)
+    
+    yfiller = np.full((1, leftMat.shape[0]), 1, dtype=int)[0]
+    y = np.concatenate((y, yfiller), axis=None)
+    yfiller = np.full((1, rightMat.shape[0]), 2, dtype=int)[0]
+    y = np.concatenate((y, yfiller), axis=None)
     
 clf = LinearDiscriminantAnalysis(solver='lsqr', shrinkage='auto').fit(X, y)
 
