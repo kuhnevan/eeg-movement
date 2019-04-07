@@ -79,10 +79,11 @@ for j in range(1, 53):
         epochs = mne.Epochs(raw, events, tmin=tmin, tmax=tmax)
         epochs_data = epochs.get_data()
         
-        if i==0:
-            data_FFT_left = np.fft.fft(epochs_data, axis=0)
-        else:
-            data_FFT_right = np.fft.fft(epochs_data, axis=0)
+#        if i==0:
+#            data_FFT_left = np.fft.fft(epochs_data, axis=0)
+#        else:
+#            data_FFT_right = np.fft.fft(epochs_data, axis=0)
+            
     #end inner for loop
     savemat('../../processed-data/s{}-left.mat'.format(j),
             {'movement_left': data_FFT_left})
