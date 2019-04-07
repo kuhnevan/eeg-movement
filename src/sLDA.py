@@ -22,7 +22,7 @@ for j in range(2, 53):
     right = "../../processed-data-image/s{}-right-image.mat".format(j)
     leftMat = loadmat(left)
     rightMat = loadmat(right)
-    a = np.array([leftMat, rightMat])
+    a = np.array([leftMat["movement_left"], rightMat["movement_right"]])
     
     #creates np array in the form [[1, 2, 3, ...], [1, 2, 3, ...], [1, 2, 3,...]]
     X = np.concatenate((X, a), axis=0)
