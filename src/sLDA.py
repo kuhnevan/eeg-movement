@@ -29,8 +29,7 @@ for j in range(2, 53):
     #creates np array in the form [1, 2, 1, 2, 1, 2, ...]
     y = np.concatenate((y, np.array([1, 2])), axis=None)
     
-clf = LinearDiscriminantAnalysis()
-clf.fit(X, y)
+clf = LinearDiscriminantAnalysis(solver='lsqr', shrinkage='auto').fit(X, y)
 
 #test prediction with testing
 testImage = "../../processed-data-image/s1-left-image.mat"
