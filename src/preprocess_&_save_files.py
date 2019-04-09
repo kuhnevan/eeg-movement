@@ -21,8 +21,8 @@ for j in range(1, 53):
         data_file_path = "../../data/s0{}.mat".format(j)
     
     mat = loadmat(data_file_path)
-    data_FFT_left = 0
-    data_FFT_right = 0
+    data_left = 0
+    data_right = 0
     hand = ""
     ch_names = [" FP1 ", " AF7 ", " AF3 ", " F1 ", " F3 ", " F5 ", " F7 ", " FT7 ",
     " FC5 ", " FC3 ", " FC1 ", " C1 ", " C3 ", " C5 ", " T7 ", " TP7 ", " CP5 ",
@@ -79,15 +79,15 @@ for j in range(1, 53):
         epochs = mne.Epochs(raw, events, tmin=tmin, tmax=tmax)
         epochs_data = epochs.get_data()
         
-#        if i==0:
-#            data_FFT_left = np.fft.fft(epochs_data, axis=0)
-#        else:
-#            data_FFT_right = np.fft.fft(epochs_data, axis=0)
+        if i==0:
+            data_left = epochs_data
+        else:
+            data_right = epochs_data
             
     #end inner for loop
     savemat('../../processed-data/s{}-left.mat'.format(j),
-            {'movement_left': data_FFT_left})
+            {'movement_left': data_left})
     savemat('../../processed-data/s{}-right.mat'.format(j),
-            {'movement_right': data_FFT_right})
+            {'movement_right': data_right})
 #end outer for loop
 ########
