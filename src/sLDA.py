@@ -8,23 +8,23 @@ from scipy.io import loadmat
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
-#left and right should be in form "[[1, 2, 3, ...], [3, 4, 6, ...], [...], ...]"
+# left and right should be in form "[[1, 2, 3, ...], [3, 4, 6, ...], [...], ...]"
 
-#left = "../../processed-data-image/s1-left-image.mat"
-#right = "../../processed-data-image/s1-right-image.mat"
-#leftMat = loadmat(left)["movement_left"]
-#rightMat = loadmat(right)["movement_right"]
-#
-#X = np.concatenate((leftMat, rightMat), axis=0)
-#
-#yfiller = np.full((1, leftMat.shape[0]), 1, dtype=int)[0]
-#y = yfiller
-#yfiller = np.full((1, rightMat.shape[0]), 2, dtype=int)[0]
-#y = np.concatenate((y, yfiller), axis=None)
+left = "../../processed-data-image/s1-left-image.mat"
+right = "../../processed-data-image/s1-right-image.mat"
+leftMat = loadmat(left)["movement_left"]
+rightMat = loadmat(right)["movement_right"]
+
+X = np.concatenate((leftMat, rightMat), axis=0)
+
+yfiller = np.full((1, leftMat.shape[0]), 1, dtype=int)[0]
+y = yfiller
+yfiller = np.full((1, rightMat.shape[0]), 2, dtype=int)[0]
+y = np.concatenate((y, yfiller), axis=None)
 
 
 
-for j in range(1, 53):
+for j in range(2, 53):
     left = "../../processed-data-image/s{}-left-image.mat".format(j)
     right = "../../processed-data-image/s{}-right-image.mat".format(j)
     leftMat = loadmat(left)["movement_left"]
