@@ -7,6 +7,7 @@ from scipy.io import loadmat
 #from scipy.io import savemat
 import numpy as np
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.metrics import roc_auc_score
 
 # left and right should be in form "[[1, 2, 3, ...], [3, 4, 6, ...], [...], ...]"
 
@@ -37,7 +38,7 @@ for j in range(2, 37):
     
     yfiller = np.full((1, leftMat.shape[0]), 1, dtype=int)[0]
     y = np.concatenate((y, yfiller), axis=None)
-    yfiller = np.full((1, rightMat.shape[0]), 2, dtype=int)[0]
+    yfiller = np.full((1, rightMat.shape[0]), 0, dtype=int)[0]
     y = np.concatenate((y, yfiller), axis=None)
     
 clf = LinearDiscriminantAnalysis(solver='lsqr', shrinkage='auto').fit(X, y)
@@ -52,9 +53,16 @@ numRight = 0;
 numRH = 0;
 numLH = 0
 
+testX = []
+testY = []
+
+
+
 for k in range(37, 53):
     testImage = "../../processed-data-image/s{}-left-image.mat".format(k)
     testImageMat = loadmat(testImage)["movement_left"]
+    testX.append(testImageMat)
+    testY.append(np.full(testImageMat.shape[0], 1))
     resultMat = clf.predict(testImageMat)
     for aResult in resultMat:
         numTested = numTested + 1
@@ -64,13 +72,26 @@ for k in range(37, 53):
     
     testImage = "../../processed-data-image/s{}-right-image.mat".format(k)
     testImageMat = loadmat(testImage)["movement_right"]
+    testX.append(testImageMat)
+    testY.append(np.full(testImageMat.shape[0], 0))
     resultMat = clf.predict(testImageMat)
     for aResult in resultMat:
         numTested = numTested + 1
         numRH = numRH + 1
         if aResult==2:
             numRight = numRight + 1
+
+testX = np.array(testX)
+testX = np.reshape(testX, (608, 69))
+testY = np.array(testY)
+testY = testY.flatten()
+
+y_true = testY
+probs = clf.predict_proba(testX)
+y_scores = probs[:, 1]
+score  = roc_auc_score(y_true, y_scores)
             
 print(numRight/numTested)
 print(numRH)
 print(numLH)
+print(score)
