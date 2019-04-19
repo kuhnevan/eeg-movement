@@ -18,32 +18,29 @@ right = "../../processed-data-image/s1-right-image.mat"
 leftMat = loadmat(left)["movement_left"]
 rightMat = loadmat(right)["movement_right"]
 
-X = np.concatenate((leftMat, rightMat), axis=0)
+trainX = []
+trainY = []
 
-yfiller = np.full((1, leftMat.shape[0]), 1, dtype=int)[0]
-y = yfiller
-yfiller = np.full((1, rightMat.shape[0]), 0, dtype=int)[0]
-y = np.concatenate((y, yfiller), axis=None)
-
-
-
-for j in range(2, 37):
+for j in range(1, 37):
     left = "../../processed-data-image/s{}-left-image.mat".format(j)
     right = "../../processed-data-image/s{}-right-image.mat".format(j)
     leftMat = loadmat(left)["movement_left"]
     rightMat = loadmat(right)["movement_right"]
     
     #creates np array in the form [[1, 2, 3, ...], [1, 2, 3, ...], [1, 2, 3,...]]
-    X = np.concatenate((X, leftMat), axis=0)
-    X = np.concatenate((X, rightMat), axis=0)
+    trainX.append(leftMat)
+    trainX.append(rightMat)
     #creates np array in the form [1, 2, 1, 2, 1, 2, ...]
     
-    yfiller = np.full((1, leftMat.shape[0]), 1, dtype=int)[0]
-    y = np.concatenate((y, yfiller), axis=None)
-    yfiller = np.full((1, rightMat.shape[0]), 0, dtype=int)[0]
-    y = np.concatenate((y, yfiller), axis=None)
+    trainY.append(np.full(leftMat.shape[0], 1))
+    trainY.append(np.full(rightMat.shape[0], 0))
     
-clf = LinearDiscriminantAnalysis(solver='lsqr', shrinkage='auto').fit(X, y)
+trainX = np.array(trainX)
+trainX = np.reshape(trainX, (1368, 69))
+trainY = np.array(trainY)
+trainY = trainY.flatten()
+    
+clf = LinearDiscriminantAnalysis(solver='lsqr', shrinkage='auto').fit(trainX, trainY)
 
 #test prediction with testing
 #testImage = "../desktop/448/processed-data-image/s1-left-image.mat"
@@ -57,8 +54,6 @@ numLH = 0
 
 testX = []
 testY = []
-
-
 
 for k in range(37, 53):
     testImage = "../../processed-data-image/s{}-left-image.mat".format(k)
@@ -80,7 +75,7 @@ for k in range(37, 53):
     for aResult in resultMat:
         numTested = numTested + 1
         numRH = numRH + 1
-        if aResult==2:
+        if aResult==0:
             numRight = numRight + 1
 
 testX = np.array(testX)
