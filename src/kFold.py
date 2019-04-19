@@ -35,8 +35,8 @@ for i in range(lowRange, highRange):
     for ii in range(lowRange, highRange):
         if ii==i or ii==starterLoc: 
             continue
-        left = "../../processed-data-image/s{}-left-image.mat".format(j)
-        right = "../../processed-data-image/s{}-right-image.mat".format(j)
+        left = "../../processed-data-image/s{}-left-image.mat".format(ii)
+        right = "../../processed-data-image/s{}-right-image.mat".format(ii)
         leftMat = loadmat(left)["movement_left"]
         rightMat = loadmat(right)["movement_right"]
         
